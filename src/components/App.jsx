@@ -1,5 +1,5 @@
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import SearchBar from './Searchbar/Searchbar';
+import { SearchBar } from './Searchbar/Searchbar';
 import { fetchImages } from '../getDataImage';
 import React, { Component } from 'react';
 import { BtnWraper, BtnLoadMore } from './App.styled';
