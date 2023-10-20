@@ -1,72 +1,54 @@
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { SearchBar } from './Searchbar/Searchbar';
 import { fetchImages } from '../getDataImage';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BtnWraper, BtnLoadMore } from './App.styled';
 
-export class App extends Component {
-  state = {
-    stringSearch: '',
-    gallery: [],
-    page: 1,
-    error: false,
-    spiner: true,
-  };
-
-  loadImg = 0;
+export const App = () => {
+  const [isStringSearch, setStringSearsh] = useState('');
+  const [isGallery, setGallery] = useState([]);
+  const [isPage, setPage] = useState(1);
+  const [isError, setError] = useState(false);
+  const [isSpiner, setSpiner] = useState(true);
+  const [isLoadMore, setLoadMore] = useState(false);
 
   // для організації пошуку міняєму в стейті рядок для пошуку
-  onSubmitForm = newStr => {
-    this.setState({
-      stringSearch: newStr,
-      page: 1,
-      gallery: [],
-    });
+  const onSubmitForm = newStr => {
+    setStringSearsh(newStr);
+    setPage(1);
+    setGallery([]);
   };
 
-  componentDidUpdate = (prProps, prState) => {
-    const {
-      state: { stringSearch, page },
-    } = this;
-    if (prState.stringSearch !== stringSearch || prState.page !== page) {
-      this.setState({
-        spiner: true,
-      });
-
-      try {
-        fetchImages(stringSearch, page).then(data => {
-          const totalHits = data.totalHits;
-          this.setState(prState => {
-            return {
-              gallery: [...prState.gallery, ...data.hits],
-              loadMore: page < Math.ceil(totalHits / 12),
-            };
+  useEffect(
+    prState => {
+      if (isStringSearch) {
+        setSpiner(true);
+        try {
+          fetchImages(isStringSearch, isPage).then(data => {
+            const totalHits = data.totalHits;
+            setGallery([...isGallery, ...data.hits]);
+            setLoadMore(isPage < Math.ceil(totalHits / 12));
           });
-        });
-      } catch (error) {
-        console.log('error :>> ', error);
-        this.setState({
-          error: true,
-        });
-      } finally {
-        this.setState({
-          spiner: false,
-        });
+        } catch (error) {
+          // console.log('error :>> ', error);
+          setError(true);
+        } finally {
+          setSpiner(false);
+        }
       }
-    }
+    },
+    [isStringSearch, isPage]
+  );
+
+  const onLoadMore = () => {
+    setPage(isPage + 1);
   };
 
-  onLoadMore = () => {
-    this.setState(prState => {
-      return { page: prState.page + 1 };
-    });
-  };
-
-  renderButon = renderLoadMore => {
+  const renderButon = renderLoadMore => {
     if (renderLoadMore) {
       return (
         <BtnWraper>
-          <BtnLoadMore type="button" onClick={this.onLoadMore}>
+          <BtnLoadMore type="button" onClick={onLoadMore}>
             Load more
           </BtnLoadMore>
         </BtnWraper>
@@ -74,25 +56,11 @@ export class App extends Component {
     } else {
     }
   };
-
-  render() {
-    const {
-      onSubmitForm,
-      onLoadMore,
-      state: { gallery, error, spiner, loadMore },
-    } = this;
-
-    return (
-      <div>
-        <SearchBar onSubmitForm={onSubmitForm} />
-        <ImageGallery
-          gallery={gallery}
-          onLoadMore={onLoadMore}
-          onError={error}
-          onSpiner={spiner}
-        />
-        {this.renderButon(loadMore)}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <SearchBar onSubmitForm={onSubmitForm} />
+      <ImageGallery gallery={isGallery} onError={isError} onSpiner={isSpiner} />
+      {renderButon(isLoadMore)}
+    </div>
+  );
+};

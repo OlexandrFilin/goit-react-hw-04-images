@@ -16,7 +16,6 @@ export const fetchImages = async (strSearch, pageNumber) => {
   const response = await axios
     .get(`${BASE_URL_PIXABAY}?${param.toString()}`)
     .catch(error => {
-      console.log(error.message);
       throw new Error(error.message);
     });
   console.log('response :>> ', response);
