@@ -1,6 +1,6 @@
 import React from 'react';
 import { WrapImageGallery, MessageNoResult } from './ImageGallery.styled';
-import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
+import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { spinerFunc } from '../Loader/Loader';
 
 export const ImageGallery = props => {

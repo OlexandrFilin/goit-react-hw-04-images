@@ -1,40 +1,31 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { ImageGalleryItemInp } from './ImageGalleryItem.styled';
 import { ModalWindow } from 'components/Modal/Modal';
 
-export default class ImageGalleryItem extends Component {
-  state = {
-    showmodal: false,
+export const ImageGalleryItem = ({ ImgItem }) => {
+  const [showmodal, setShowmodal] = useState(false);
+  const onCloseModal = () => {
+    setShowmodal(false);
   };
-  onCloseModal = () => {
-    this.setState({
-      showmodal: false,
-    });
+  const onOpenModal = () => {
+    setShowmodal(true);
   };
-  onOpenModal = () => {
-    this.setState({
-      showmodal: true,
-    });
-  };
-  render() {
-    //const { id, webformatURL, tags } = this.props.ImgItem;
-    return (
-      <div>
-        <ImageGalleryItemInp
-          width="300"
-          height="200"
-          src={`${this.props.ImgItem.webformatURL}`}
-          alt={`${this.props.ImgItem.tags}`}
-          loading="lazy"
-          onClick={this.onOpenModal}
-        />
-        <ModalWindow
-          showModal={this.state.showmodal}
-          onCloseModal={this.onCloseModal}
-          tags={this.props.tags}
-          image={this.props.ImgItem.largeImageURL}
-        ></ModalWindow>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <ImageGalleryItemInp
+        width="300"
+        height="200"
+        src={`${ImgItem.webformatURL}`}
+        alt={`${ImgItem.tags}`}
+        loading="lazy"
+        onClick={onOpenModal}
+      />
+      <ModalWindow
+        showModal={showmodal}
+        onCloseModal={onCloseModal}
+        tags={ImgItem.tags}
+        image={ImgItem.largeImageURL}
+      ></ModalWindow>
+    </div>
+  );
+};
