@@ -19,26 +19,23 @@ export const App = () => {
     setGallery([]);
   };
 
-  useEffect(
-    prState => {
-      if (isStringSearch) {
-        setSpiner(true);
-        try {
-          fetchImages(isStringSearch, isPage).then(data => {
-            const totalHits = data.totalHits;
-            setGallery([...isGallery, ...data.hits]);
-            setLoadMore(isPage < Math.ceil(totalHits / 12));
-          });
-        } catch (error) {
-          // console.log('error :>> ', error);
-          setError(true);
-        } finally {
-          setSpiner(false);
-        }
+  useEffect(() => {
+    if (isStringSearch) {
+      setSpiner(true);
+      try {
+        fetchImages(isStringSearch, isPage).then(data => {
+          const totalHits = data.totalHits;
+          setGallery(prevGallery => [...prevGallery, ...data.hits]);
+          setLoadMore(isPage < Math.ceil(totalHits / 12));
+        });
+      } catch (error) {
+        // console.log('error :>> ', error);
+        setError(true);
+      } finally {
+        setSpiner(false);
       }
-    },
-    [isStringSearch, isPage]
-  );
+    }
+  }, [isStringSearch, isPage]);
 
   const onLoadMore = () => {
     setPage(isPage + 1);
